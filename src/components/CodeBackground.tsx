@@ -7,32 +7,8 @@ interface CodeBackgroundProps {
  * Fond avec du code stylisé pour les cartes de blog.
  * Affiche des lignes de code en arrière-plan avec effet flou.
  */
-export default function CodeBackground({ code, language }: CodeBackgroundProps) {
+export default function CodeBackground({ code }: CodeBackgroundProps) {
   const lines = code.split("\n");
-
-  // Couleurs selon le langage
-  const colors = {
-    react: {
-      keyword: "#61DAFB", // Bleu React
-      string: "#A5D6A7",
-      function: "#FFD700",
-      comment: "#6A9955",
-    },
-    typescript: {
-      keyword: "#3178C6", // Bleu TypeScript
-      string: "#CE9178",
-      function: "#DCDCAA",
-      comment: "#6A9955",
-    },
-    css: {
-      keyword: "#00D9FF", // Cyan accent
-      string: "#CE9178",
-      function: "#DCDCAA",
-      comment: "#6A9955",
-    },
-  };
-
-  const colorScheme = colors[language];
 
   return (
     <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-black/95 to-black/80">
