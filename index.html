@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#00d9ff" />
+
+    <!-- SEO de base -->
+    <title>Roes Nay — Développeur Web Full Stack & Créateur d'Expériences Digitales</title>
+    <meta
+      name="description"
+      content="Portfolio de N. G. Roesnay Scharaf-Dine WENON, étudiant en Physique à l'Université d'Abomey-Calavi et développeur web full stack. Découvrez mes projets React, TypeScript, et mes créations graphiques."
+    />
+    <meta name="keywords" content="développeur web, full stack, React, TypeScript, Tailwind CSS, portfolio, Bénin, Abomey-Calavi, graphisme, design" />
+    <meta name="author" content="N. G. Roesnay Scharaf-Dine WENON" />
+    <meta name="robots" content="index, follow" />
+
+    <!-- Open Graph (Facebook, LinkedIn) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Roes Nay — Développeur Web Full Stack" />
+    <meta property="og:description" content="Étudiant en Physique et développeur web passionné. Je crée des applications web modernes avec React, TypeScript et Tailwind CSS." />
+    <meta property="og:image" content="/images/profile/photo.jpeg" />
+    <meta property="og:url" content="https://roesnay.com" />
+    <meta property="og:site_name" content="Roes Nay Portfolio" />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Roes Nay — Développeur Web Full Stack" />
+    <meta name="twitter:description" content="Étudiant en Physique et développeur web passionné. Je crée des applications web modernes avec React, TypeScript et Tailwind CSS." />
+    <meta name="twitter:image" content="/images/profile/photo.jpeg" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://roesnay.com" />
+
+    <!-- Préconnexion aux serveurs Google Fonts pour accélérer le chargement des polices -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!--
+      Script exécuté avant le rendu React : applique immédiatement la classe "dark"
+      sur <html> si nécessaire, pour éviter un flash visuel (fond clair puis sombre)
+      au chargement de la page. Il lit le même localStorage que ThemeContext.tsx.
+    -->
+    <script>
+      (function () {
+        var stored = localStorage.getItem("roesnay-portfolio-theme");
+        var prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
+        var isDark = stored ? stored === "dark" : !prefersLight;
+        if (isDark) document.documentElement.classList.add("dark");
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+# robots.txt pour le portfolio de Roes Nay
+# Ce fichier indique aux moteurs de recherche (Google, Bing, etc.)
+# comment explorer votre site
+
+User-agent: *
+Allow: /
+
+# Sitemap (à mettre à jour avec votre vrai domaine une fois déployé)
+Sitemap: https://roesnay.com/sitemap.xml

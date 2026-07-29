@@ -1,0 +1,53 @@
+interface CodeBackgroundProps {
+  code: string;
+  language: "react" | "typescript" | "css";
+}
+
+/**
+ * Fond avec du code stylisé pour les cartes de blog.
+ * Affiche des lignes de code en arrière-plan avec effet flou.
+ */
+export default function CodeBackground({ code, language }: CodeBackgroundProps) {
+  const lines = code.split("\n");
+
+  // Couleurs selon le langage
+  const colors = {
+    react: {
+      keyword: "#61DAFB", // Bleu React
+      string: "#A5D6A7",
+      function: "#FFD700",
+      comment: "#6A9955",
+    },
+    typescript: {
+      keyword: "#3178C6", // Bleu TypeScript
+      string: "#CE9178",
+      function: "#DCDCAA",
+      comment: "#6A9955",
+    },
+    css: {
+      keyword: "#00D9FF", // Cyan accent
+      string: "#CE9178",
+      function: "#DCDCAA",
+      comment: "#6A9955",
+    },
+  };
+
+  const colorScheme = colors[language];
+
+  return (
+    <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-black/95 to-black/80">
+      <div className="absolute inset-0 opacity-60">
+        <pre className="font-mono text-[11px] leading-relaxed text-white/80 md:text-sm">
+          {lines.map((line, i) => (
+            <div key={i} className="whitespace-pre">
+              {line}
+            </div>
+          ))}
+        </pre>
+      </div>
+
+      {/* Overlay avec dégradé pour lisibilité */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+    </div>
+  );
+}

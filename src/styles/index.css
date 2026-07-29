@@ -1,0 +1,62 @@
+/* Directives Tailwind : injectent les classes utilitaires générées à partir de tailwind.config.js */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------
+   Styles de base appliqués à toute l'application
+--------------------------------------------------------- */
+html {
+  scroll-behavior: smooth; /* Défilement fluide quand on clique sur un lien de la nav (#projets, #contact, etc.) */
+}
+
+body {
+  /* Par défaut (sans classe "dark" sur <html>) : thème clair.
+     Avec la classe "dark" : thème sombre (comportement par défaut du cahier des charges). */
+  @apply bg-bg-light text-ink-light font-body antialiased transition-colors duration-300 dark:bg-bg dark:text-ink;
+}
+
+/* Sélection de texte teintée avec la couleur accent, plus cohérent que le bleu par défaut du navigateur */
+::selection {
+  background-color: #00d9ff33;
+  color: inherit;
+}
+
+/* Scrollbar : couleurs adaptées selon le thème actif */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+.dark ::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+  border-radius: 999px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #1f1f1f;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00a8c7;
+}
+
+/* Respect de la préférence utilisateur "réduire les animations" (accessibilité) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Focus clavier visible partout : élément important pour l'accessibilité, ne jamais le supprimer */
+:focus-visible {
+  outline: 2px solid #00d9ff;
+  outline-offset: 3px;
+}
