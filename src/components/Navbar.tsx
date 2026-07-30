@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Sun, Moon, Menu, X } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useLocale } from "../i18n/LocaleContext";
@@ -8,6 +9,8 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { locale, toggleLocale, t } = useLocale();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Liens de navigation construits avec t() : recalculés à chaque changement de langue.
   const navLinks = [
@@ -25,6 +28,28 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  /**
+   * Gère la navigation pour les liens avec hash (ex: /#a-propos).
+   * Si on est déjà sur la page d'accueil, scroll smooth vers la section.
+   * Sinon, navigue vers "/" puis scroll après un court délai.
+   */
+  const handleHashClick = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    const hash = href.split("#")[1];
+    setMenuOpen(false);
+
+    if (location.pathname === "/") {
+      const el = document.getElementById(hash);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate("/");
+      setTimeout(() => {
+        const el = document.getElementById(hash);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    }
+  };
+
   return (
     <header
       className={`fixed top-0 z-50 w-full transition-colors duration-300 ${
@@ -34,22 +59,35 @@ export default function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a href="#accueil" className="font-display text-lg font-bold text-ink-light dark:text-ink">
+        <Link to="/" className="font-display text-lg font-bold text-ink-light dark:text-ink">
           Roes<span className="text-accent">.</span>Nay
-        </a>
+        </Link>
 
         {/* Navigation desktop */}
         <ul className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className="font-body text-sm text-ink-light-soft transition-colors hover:text-accent dark:text-ink-soft"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
+          {navLinks.map((link) => {
+            const isHash = link.href.includes("#");
+            return (
+              <li key={link.href}>
+                {isHash ? (
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleHashClick(e, link.href)}
+                    className="font-body text-sm text-ink-light-soft transition-colors hover:text-accent dark:text-ink-soft"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    to={link.href}
+                    className="font-body text-sm text-ink-light-soft transition-colors hover:text-accent dark:text-ink-soft"
+                  >
+                    {link.label}
+                  </Link>
+                )}
+              </li>
+            );
+          })}
         </ul>
 
         <div className="flex items-center gap-3">
@@ -87,17 +125,30 @@ export default function Navbar() {
       {/* Menu mobile déroulant */}
       {menuOpen && (
         <ul className="flex flex-col gap-1 border-t border-black/10 bg-bg-light px-6 py-4 dark:border-white/10 dark:bg-bg md:hidden">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className="block py-2 font-body text-ink-light-soft transition-colors hover:text-accent dark:text-ink-soft"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
+          {navLinks.map((link) => {
+            const isHash = link.href.includes("#");
+            return (
+              <li key={link.href}>
+                {isHash ? (
+                  <a
+                    href={link.href}
+                    onClick={(e) => handleHashClick(e, link.href)}
+                    className="block py-2 font-body text-ink-light-soft transition-colors hover:text-accent dark:text-ink-soft"
+                  >
+                    {link.label}
+                  </a>
+                ) : (
+                  <Link
+                    to={link.href}
+                    onClick={() => setMenuOpen(false)}
+                    className="block py-2 font-body text-ink-light-soft transition-colors hover:text-accent dark:text-ink-soft"
+                  >
+                    {link.label}
+                  </Link>
+                )}
+              </li>
+            );
+          })}
         </ul>
       )}
     </header>
