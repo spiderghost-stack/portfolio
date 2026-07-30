@@ -35,6 +35,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const root = window.document.documentElement;
     root.classList.toggle("dark", theme === "dark");
+    root.style.colorScheme = theme;
     window.localStorage.setItem(STORAGE_KEY, theme);
   }, [theme]);
 

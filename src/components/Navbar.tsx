@@ -118,22 +118,25 @@ export default function Navbar() {
         </ul>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Bascule de langue — masquée sur mobile, accessible dans le menu mobile */}
+          {/* Bascule de langue */}
           <button
+            type="button"
             onClick={toggleLocale}
             aria-label={locale === "fr" ? "Switch to English" : "Passer en français"}
-            className="hidden h-9 items-center justify-center rounded-full border border-black/10 px-3 font-mono text-xs font-medium text-ink-light transition-colors hover:border-accent/50 hover:text-accent dark:border-white/10 dark:text-ink md:flex"
+            className="flex h-10 items-center justify-center rounded-full border border-black/10 px-3 font-mono text-xs font-medium text-ink-light transition-colors hover:border-accent/50 hover:text-accent active:bg-black/5 dark:border-white/10 dark:text-ink dark:active:bg-white/5"
           >
             {locale === "fr" ? "EN" : "FR"}
           </button>
 
-          {/* Bascule de thème — masquée sur mobile, accessible dans le menu mobile */}
+          {/* Bascule de thème : icône soleil en mode sombre (pour passer au clair),
+              icône lune en mode clair (pour passer au sombre). */}
           <button
+            type="button"
             onClick={toggleTheme}
             aria-label={theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"}
-            className="hidden h-9 w-9 items-center justify-center rounded-full border border-black/10 text-ink-light transition-colors hover:border-accent/50 hover:text-accent dark:border-white/10 dark:text-ink md:flex"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-black/10 text-ink-light transition-colors hover:border-accent/50 hover:text-accent active:bg-black/5 dark:border-white/10 dark:text-ink dark:active:bg-white/5"
           >
-            {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === "dark" ? <Sun size={18} className="pointer-events-none" /> : <Moon size={18} className="pointer-events-none" />}
           </button>
 
           {/* Bouton hamburger, visible uniquement en mobile */}
@@ -195,29 +198,6 @@ export default function Navbar() {
             })}
           </ul>
 
-          {/* Bascules thème + langue dans le menu mobile */}
-          <div className="mt-4 flex items-center gap-3 border-t border-black/10 pt-4 dark:border-white/10">
-            <button
-              onClick={() => { toggleTheme(); }}
-              aria-label={theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 text-ink-light transition-colors active:border-accent/50 active:text-accent dark:border-white/10 dark:text-ink"
-            >
-              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-            </button>
-            <span className="font-body text-sm text-ink-light-soft dark:text-ink-soft">
-              {theme === "dark" ? "Mode clair" : "Mode sombre"}
-            </span>
-
-            <div className="ml-auto">
-              <button
-                onClick={() => { toggleLocale(); }}
-                aria-label={locale === "fr" ? "Switch to English" : "Passer en français"}
-                className="flex h-11 items-center justify-center rounded-full border border-black/10 px-4 font-mono text-sm font-medium text-ink-light transition-colors active:border-accent/50 active:text-accent dark:border-white/10 dark:text-ink"
-              >
-                {locale === "fr" ? "EN" : "FR"}
-              </button>
-            </div>
-          </div>
         </div>
       )}
     </header>
