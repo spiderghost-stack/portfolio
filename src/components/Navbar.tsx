@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Sun, Moon, Menu, X } from "lucide-react";
+import { Sun, Moon, Menu, X, ArrowUp } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { useLocale } from "../i18n/LocaleContext";
 
@@ -22,11 +22,22 @@ export default function Navbar() {
     { label: t("nav.contact"), href: "/#contact" },
   ];
 
+  // Suivi du scroll pour l'apparence de la navbar et le bouton "retour en haut"
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 12);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 12);
+      setShowScrollTop(window.scrollY > 400);
+    };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  /** Scroll smooth vers le haut de la page */
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   /**
    * Gère la navigation pour les liens avec hash (ex: /#a-propos).
@@ -51,12 +62,12 @@ export default function Navbar() {
   };
 
   return (
+    <>
     <header
-      className={`fixed top-0 z-50 w-full transition-colors duration-300 ${
-        scrolled
+      className={`fixed top-0 z-50 w-full transition-colors duration-300 ${scrolled
           ? "border-b border-black/10 bg-bg-light/90 backdrop-blur-md dark:border-white/10 dark:bg-bg/90"
           : "bg-transparent"
-      }`}
+        }`}
     >
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link to="/" className="font-display text-lg font-bold text-ink-light dark:text-ink">
@@ -67,12 +78,28 @@ export default function Navbar() {
         <ul className="hidden items-center gap-8 md:flex">
           {navLinks.map((link) => {
             const isHash = link.href.includes("#");
+            const isHome = link.href === "/";
             return (
               <li key={link.href}>
                 {isHash ? (
                   <a
                     href={link.href}
                     onClick={(e) => handleHashClick(e, link.href)}
+                    className="font-body text-sm text-ink-light-soft transition-colors hover:text-accent dark:text-ink-soft"
+                  >
+                    {link.label}
+                  </a>
+                ) : isHome ? (
+                  <a
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      if (location.pathname === "/") {
+                        scrollToTop();
+                      } else {
+                        navigate("/");
+                      }
+                    }}
                     className="font-body text-sm text-ink-light-soft transition-colors hover:text-accent dark:text-ink-soft"
                   >
                     {link.label}
@@ -90,67 +117,121 @@ export default function Navbar() {
           })}
         </ul>
 
-        <div className="flex items-center gap-3">
-          {/* Bascule de langue : affiche la langue vers laquelle on va basculer */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Bascule de langue — masquée sur mobile, accessible dans le menu mobile */}
           <button
             onClick={toggleLocale}
             aria-label={locale === "fr" ? "Switch to English" : "Passer en français"}
-            className="flex h-9 items-center justify-center rounded-full border border-black/10 px-3 font-mono text-xs font-medium text-ink-light transition-colors hover:border-accent/50 hover:text-accent dark:border-white/10 dark:text-ink"
+            className="hidden h-9 items-center justify-center rounded-full border border-black/10 px-3 font-mono text-xs font-medium text-ink-light transition-colors hover:border-accent/50 hover:text-accent dark:border-white/10 dark:text-ink md:flex"
           >
             {locale === "fr" ? "EN" : "FR"}
           </button>
 
-          {/* Bascule de thème : icône soleil en mode sombre (pour passer au clair),
-              icône lune en mode clair (pour passer au sombre). */}
+          {/* Bascule de thème — masquée sur mobile, accessible dans le menu mobile */}
           <button
             onClick={toggleTheme}
             aria-label={theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"}
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-black/10 text-ink-light transition-colors hover:border-accent/50 hover:text-accent dark:border-white/10 dark:text-ink"
+            className="hidden h-9 w-9 items-center justify-center rounded-full border border-black/10 text-ink-light transition-colors hover:border-accent/50 hover:text-accent dark:border-white/10 dark:text-ink md:flex"
           >
             {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
           </button>
 
           {/* Bouton hamburger, visible uniquement en mobile */}
           <button
-            className="flex h-9 w-9 items-center justify-center text-ink-light dark:text-ink md:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-ink-light dark:text-ink md:hidden"
             onClick={() => setMenuOpen((open) => !open)}
             aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
             aria-expanded={menuOpen}
           >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </nav>
 
       {/* Menu mobile déroulant */}
       {menuOpen && (
-        <ul className="flex flex-col gap-1 border-t border-black/10 bg-bg-light px-6 py-4 dark:border-white/10 dark:bg-bg md:hidden">
-          {navLinks.map((link) => {
-            const isHash = link.href.includes("#");
-            return (
-              <li key={link.href}>
-                {isHash ? (
-                  <a
-                    href={link.href}
-                    onClick={(e) => handleHashClick(e, link.href)}
-                    className="block py-2 font-body text-ink-light-soft transition-colors hover:text-accent dark:text-ink-soft"
-                  >
-                    {link.label}
-                  </a>
-                ) : (
-                  <Link
-                    to={link.href}
-                    onClick={() => setMenuOpen(false)}
-                    className="block py-2 font-body text-ink-light-soft transition-colors hover:text-accent dark:text-ink-soft"
-                  >
-                    {link.label}
-                  </Link>
-                )}
-              </li>
-            );
-          })}
-        </ul>
+        <div className="border-t border-black/10 bg-bg-light px-6 py-4 dark:border-white/10 dark:bg-bg md:hidden">
+          <ul className="flex flex-col gap-1">
+            {navLinks.map((link) => {
+              const isHash = link.href.includes("#");
+              const isHome = link.href === "/";
+              return (
+                <li key={link.href}>
+                  {isHash ? (
+                    <a
+                      href={link.href}
+                      onClick={(e) => handleHashClick(e, link.href)}
+                      className="block py-3 font-body text-base text-ink-light-soft transition-colors hover:text-accent dark:text-ink-soft"
+                    >
+                      {link.label}
+                    </a>
+                  ) : isHome ? (
+                    <a
+                      href="/"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setMenuOpen(false);
+                        if (location.pathname === "/") {
+                          scrollToTop();
+                        } else {
+                          navigate("/");
+                        }
+                      }}
+                      className="block py-3 font-body text-base text-ink-light-soft transition-colors hover:text-accent dark:text-ink-soft"
+                    >
+                      {link.label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={link.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="block py-3 font-body text-base text-ink-light-soft transition-colors hover:text-accent dark:text-ink-soft"
+                    >
+                      {link.label}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+
+          {/* Bascules thème + langue dans le menu mobile */}
+          <div className="mt-4 flex items-center gap-3 border-t border-black/10 pt-4 dark:border-white/10">
+            <button
+              onClick={() => { toggleTheme(); }}
+              aria-label={theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"}
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-black/10 text-ink-light transition-colors active:border-accent/50 active:text-accent dark:border-white/10 dark:text-ink"
+            >
+              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+            </button>
+            <span className="font-body text-sm text-ink-light-soft dark:text-ink-soft">
+              {theme === "dark" ? "Mode clair" : "Mode sombre"}
+            </span>
+
+            <div className="ml-auto">
+              <button
+                onClick={() => { toggleLocale(); }}
+                aria-label={locale === "fr" ? "Switch to English" : "Passer en français"}
+                className="flex h-11 items-center justify-center rounded-full border border-black/10 px-4 font-mono text-sm font-medium text-ink-light transition-colors active:border-accent/50 active:text-accent dark:border-white/10 dark:text-ink"
+              >
+                {locale === "fr" ? "EN" : "FR"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </header>
+
+    {/* Bouton flottant "retour en haut" */}
+    {showScrollTop && (
+      <button
+        onClick={scrollToTop}
+        aria-label="Retour en haut de la page"
+        className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-accent text-white shadow-lg shadow-accent/30 transition-all hover:bg-accent-dim hover:shadow-xl hover:shadow-accent/40 active:scale-95"
+      >
+        <ArrowUp size={22} />
+      </button>
+    )}
+    </>
   );
 }
